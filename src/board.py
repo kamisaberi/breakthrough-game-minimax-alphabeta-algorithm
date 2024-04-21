@@ -107,15 +107,24 @@ class Board:
 
     def get_scores(self, board):
         """ Return the scores of the game for both players."""
+
         scores = {0: 0, 1: 0}
         for row in range(self.__n):
             for col in range(self.__n):
                 if board[row][col] == self.black:
-                    scores[self.black] += 1 + (1.0 ** row) * row
+                    scores[self.black] += (5-row)**2
                 elif board[row][col] == self.white:
-                    scores[self.white] += 1 + (1.0 ** (self.__n - row - 1)) * (self.__n - row - 1)
-        scores[self.black] += self.winning_score(board, self.black)
-        scores[self.white] += self.winning_score(board, self.white)
+                    scores[self.white] += row**2
+
+        # scores = {0: 0, 1: 0}
+        # for row in range(self.__n):
+        #     for col in range(self.__n):
+        #         if board[row][col] == self.black:
+        #             scores[self.black] += 1 + (1.0 ** row) * row
+        #         elif board[row][col] == self.white:
+        #             scores[self.white] += 1 + (1.0 ** (self.__n - row - 1)) * (self.__n - row - 1)
+        # scores[self.black] += self.winning_score(board, self.black)
+        # scores[self.white] += self.winning_score(board, self.white)
         return scores
 
     def winning_score(self, board, color):

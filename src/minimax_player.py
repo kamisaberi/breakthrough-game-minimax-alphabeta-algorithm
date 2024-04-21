@@ -27,48 +27,50 @@ class MinimaxPlayer(Player):
                             moves.append(move)
         return moves
 
-    def minimax(self, pos=None,  depth=0, MAX=True):
-        # print(depth)
+    def minimax(self, board, move=None, alpha=-math.inf, beta=math.inf, depth=0, MAX=True):
         if depth == self.depth:
-            brd = copy.deepcopy(self.board)
-            brd.place_piece(move=pos, player_number=0 if MAX else 1)
-            return brd.get_scores(board=brd.get_board_grid())[0 if MAX else 1], pos
-
+            return board.get_scores(board=board.get_board_grid())[0 if MAX else 1], move
         if MAX:
             maxEval = -math.inf
             best_move = None
-            for move in self.get_all_moves(self.player_number):
-                # print(move)
-                evaluation = self.minimax(move, depth+1, True)[0]
-                # print(move, evaluation)
+            for mv in self.get_all_moves(self.player_number):
+                brd = copy.deepcopy(board)
+                brd.place_piece(move=mv, player_number=0 if MAX else 1)
+                evaluation = self.minimax(
+                    brd, mv, alpha, beta,  depth+1, not MAX)[0]
                 maxEval = max(maxEval, evaluation)
-                # print(move, evaluation, maxEval)
                 if maxEval == evaluation:
-                    best_move = move
-            # print(maxEval, best_move)
+                    best_move = mv
+
+                if maxEval >= beta:
+                    break
+                if maxEval > alpha:
+                    alpha = maxEval
+
             return maxEval, best_move
         else:
             minEval = math.inf
             best_move = None
-            for move in self.get_all_moves(int(not bool(self.player_number))):
-                evaluation = self.minimax(move, depth+1, False)[0]
+            for mv in self.get_all_moves(int(not bool(self.player_number))):
+                brd = copy.deepcopy(board)
+                brd.place_piece(move=mv, player_number=0 if MAX else 1)
+                evaluation = self.minimax(
+                    brd, mv, alpha, beta, depth+1, not MAX)[0]
                 minEval = min(minEval, evaluation)
                 if minEval == evaluation:
-                    best_move = move
+                    best_move = mv
+
+                if minEval <= alpha:
+                    break
+                if minEval < beta:
+                    beta = minEval
+
             return minEval, best_move
 
     def get_next_move(self):
 
-        # moves = self.get_all_moves(self.player_number)
-        # for move in moves:
-        #     a, b = self.minimax()
-        # self.minimax(self.board , )
-        # if self.player_number == 0:
-        #     pass
-        # else:
-        #     pass
-        a, b = self.minimax()
-        print(a, b)
+        a, b = self.minimax(board=self.board)
+        # print(a, b)
         return b
 
         # TODO: Implement this function based on the minimax algorithm
